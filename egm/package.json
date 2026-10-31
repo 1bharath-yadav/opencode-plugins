@@ -1,0 +1,14 @@
+{
+  "name": "opencode-egm-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenCode V2 integration for Google's Elephant-Goldfish Model workflows",
+  "exports": {
+    ".": "./src/index.js",
+    "./tui": "./src/tui.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
