@@ -8,23 +8,24 @@ Maintain a collection of production-quality custom plugins for OpenCode. This re
 
 - Inspect the installed OpenCode version and current official V2 documentation before changing integration code.
 - Treat old gists, blog posts, and examples as historical references, not authoritative API contracts.
-- Do not invent hook names, context fields, permissions, event payloads, or keymap behavior. Verify against installed SDK/types or official docs.
-- Preserve existing OpenCode configuration and unrelated plugins. Make narrowly scoped changes and back up config before modifying it.
+- Do not invent hook names, context fields, permissions, event payloads, or keymap behavior. Verify against the SDK package installed for the target OpenCode release or official docs.
+- Preserve existing OpenCode configuration and unrelated plugins. Make narrowly scoped changes and keep a rollback copy before migrating loaders.
 - Never modify an upstream project's source to add missing integration behavior. Build an adapter in this repository; if the required capability is absent, document the limitation and stop rather than faking it.
-- Never copy secrets, tokens, OAuth account files, `.env` files, private logs, or machine-specific state into this repository.
+- Never copy secrets, OAuth account files, refresh tokens, `.env` files, private logs, or machine-specific state into this repository.
 - Avoid hard-coded user home paths. Use runtime configuration, environment variables, or OS home-directory APIs.
 - Prefer safe, reversible updates. Reject dirty or diverged upstream worktrees; never force-reset user changes.
-- Keep server and TUI parts together in one package where possible. Export `.` and `./tui` from `package.json`; use current `@opencode/plugin` and `@opencode/plugin/tui` SDK APIs after checking the installed version.
+- For V2 packages, use `Plugin.define` from `@opencode/plugin` for the server part and `Plugin.define` from `@opencode/plugin/tui` for the TUI part. Keep both entrypoints in one package via `exports`.
+- Pin `@opencode/plugin` to the OpenCode release being targeted. Update the SDK version only alongside a compatibility review and integration tests.
 - A TUI shortcut must preserve native behavior outside its intended UI context. Do not globally steal common keybindings.
 - Report tests actually run. Syntax checks are not runtime integration tests.
 
 ## Standard workflow
 
-1. Inspect the target plugin, OpenCode version, configuration, and relevant upstream API.
+1. Inspect the target plugin, OpenCode version, config, and relevant upstream API.
 2. Record behavior, compatibility constraints, and rollback path before editing.
 3. Implement the smallest isolated change.
-4. Run formatting, type checking, unit tests, syntax checks, and a real OpenCode load/smoke test where applicable.
-5. Review the diff for secrets, unrelated changes, unsafe permissions, hard-coded paths, and stale API usage.
+4. Run formatter, type checker where applicable, unit tests, syntax checks, and a real OpenCode load/smoke test.
+5. Review the diff for secrets, unrelated config changes, unsafe permissions, hard-coded paths, and stale API usage.
 6. Update plugin documentation and changelog when behavior or setup changes.
 
 ## Plugin layout
@@ -32,26 +33,30 @@ Maintain a collection of production-quality custom plugins for OpenCode. This re
 ```text
 plugin-name/
   package.json
+  bun.lock
   README.md
   src/
-    index.ts       # server entrypoint
-    tui.tsx        # optional TUI entrypoint
+    index.js       # V2 server entrypoint
+    tui.js         # optional V2 TUI entrypoint
   tests/
   docs/
 ```
 
+A package with both server and TUI parts should export `.` and `./tui`. Configure it once in `opencode.json(c)`; do not also add its TUI part to `cli.json`. A TUI-only package belongs in `cli.json`.
+
 ## EGM-specific constraints
 
 - Google EGM is an upstream source dependency. Keep its checkout separate from this repository.
-- Translate upstream workflows/personas into OpenCode-native registrations without rewriting upstream skills/persona files.
+- Translate upstream workflows/personas into OpenCode-native registrations without rewriting upstream skill/persona files.
 - Preserve reviewer isolation and only report a reviewer complete after a real independent child session returns its report.
 - Keep `experimental.subagent_depth=2` only while the corresponding two-level delegation strategy is used and supported.
 - `Ctrl+R` updates EGM upstream only from OpenCode's Plugins manager and must fall through to native key handling elsewhere.
+- EGM upstream updates do not update this adapter package. Adapter source updates are managed by this repository's Git/package version.
 
 ## Antigravity diagnostics constraints
 
 - Do not confuse `opencode-serve` being active with a successful provider request.
 - Use lowercase OpenCode log levels (`debug`, not `DEBUG`).
-- Capture the actual session error and correlate it with the provider plugin version and requested model ID.
+- Capture the actual session error and correlate it with provider plugin version and requested model ID.
 - Do not expose OAuth tokens, account JSON, refresh tokens, or private account metadata in logs or commits.
 - Do not rotate credentials, delete account state, or switch provider versions without evidence and a rollback path.
