@@ -1,7 +1,15 @@
-.DS_Store
+# Upstream source checkouts are independently versioned and never committed.
+/vendor/
+
+# Dependencies / generated artifacts
+**/node_modules/
+**/.cache/
+**/dist/
+**/.turbo/
+
+# Local secrets / credentials
 .env
 .env.*
 !.env.example
-node_modules/
-coverage/
-*.log
+**/*.pem
+**/*.key

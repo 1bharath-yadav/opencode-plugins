@@ -1,0 +1,25 @@
+{
+  "name": "opencode-knowledge-work-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OpenCode V2 adapter for Anthropic's Knowledge Work Plugins",
+  "exports": {
+    ".": "./src/index.js",
+    "./tui": "./src/tui.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@opencode/plugin": "2.2.5",
+    "solid-js": "^1.9.0"
+  },
+  "peerDependencies": {
+    "effect": "^4.0.0"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "node --check src/index.js && node --check src/tui.js"
+  }
+}

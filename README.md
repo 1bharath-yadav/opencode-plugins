@@ -1,22 +1,34 @@
 # OpenCode Plugins
 
-A monorepo for custom OpenCode plugins maintained by `1bharath-yadav`.
+Native OpenCode V2 plugin monorepo.
 
-## Layout
+## Packages
 
-- `egm/` — Google's Elephant-Goldfish Model integration for OpenCode V2.
-- `docs/` — shared development notes and architecture decisions.
+| Package | Purpose | Source |
+|---|---|---|
+| `egm/` | Google Elephant-Goldfish Model workflows, reviewers, and Plugins-manager upstream updater | [google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) |
+| `knowledge-work/` | Anthropic role-focused Knowledge Work bundles: skills, slash commands, connector inventory | [anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) |
+| `anthropic-skills/` | Anthropic's reusable Agent Skills collection | [anthropics/skills](https://github.com/anthropics/skills) |
 
-Each plugin lives in its own directory and should be independently installable, testable, and versioned. Keep upstream projects as separate source dependencies; never patch upstream source to make an adapter work.
+## V2 plugin contract
 
-## EGM
+Each package exports its server part at `.` and its TUI part at `./tui`. Add the package directory once to OpenCode's `opencode.json` `plugins` array. OpenCode discovers the TUI part from that same package; do not add another copy to `cli.json`.
 
-See [`egm/README.md`](egm/README.md) for setup, source synchronization, commands, and update behavior. The upstream source is Google's repository: https://github.com/google/elephant-goldfish-model
+## Vendor sources
 
-## Development principles
+`vendor/` contains independent shallow Git clones and is excluded from this repository's Git history. Plugin adapters read source content at runtime and do not alter upstream files. Update upstream sources by reviewing and fast-forwarding their own Git repositories independently.
 
-1. Prefer current OpenCode V2 APIs over legacy examples.
-2. Keep server and TUI entrypoints in one package (`exports`, including `./tui`).
-3. Never claim support for an OpenCode feature unless the installed API actually exposes it.
-4. Keep user data, credentials, tokens, and local machine paths out of Git.
-5. Add tests for safety boundaries, failure modes, and plugin lifecycle behavior.
+- `vendor/knowledge-work-plugins` — Apache-2.0 repository license; 22 included bundles, 252 skills, 15 slash command files at the pinned local revision.
+- `vendor/anthropic-skills` — 19 skills; licenses vary by skill. The document-processing skills `docx`, `pdf`, `pptx`, and `xlsx` are proprietary/source-available; `doc-coauthoring` has no per-skill license file. These five are runtime-local only and must not be redistributed by this adapter.
+
+## External connectors
+
+The Knowledge Work adapter inventories connector declarations but does not auto-configure MCP services. Empty URLs, credentials, OAuth, and vendor access must be explicitly set up by the user. A loaded skill does not imply that its required external tools are connected.
+
+## Tests
+
+```bash
+cd egm && bun install --frozen-lockfile && bun test
+cd ../knowledge-work && bun install --frozen-lockfile && bun test
+cd ../anthropic-skills && bun install --frozen-lockfile && bun test
+```
