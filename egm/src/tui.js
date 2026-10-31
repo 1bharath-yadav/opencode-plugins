@@ -1,4 +1,4 @@
-import { updateEgmUpstream } from "./egm-update-core.js";
+import { updateEgmUpstream } from "./update-core.js";
 
 let updating = false;
 
@@ -14,8 +14,6 @@ function setup(api) {
         group: "EGM",
         bind: "ctrl+r",
         run: () => {
-          // Only take Ctrl+R when the plugin manager's own update/check
-          // commands are currently reachable. Else let OpenCode handle it.
           const pluginDialogOpen = api.keymap.commands().some(
             (command) => command.id === "dialog.plugins.check" || command.id === "dialog.plugins.update",
           );
@@ -49,9 +47,6 @@ function setup(api) {
   }));
 }
 
-// Both entrypoints are accepted by the installed TUI loader generations.
-// The shortcut is enabled only while the plugin-manager update/check actions
-// are reachable, leaving Ctrl+R's other uses untouched elsewhere.
 export default {
   id: "elephant-goldfish-model-opencode.tui",
   setup,

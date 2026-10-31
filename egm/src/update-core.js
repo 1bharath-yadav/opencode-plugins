@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 const execFileAsync = promisify(execFile);
-export const EGM_UPSTREAM_ROOT = join(homedir(), ".local", "share", "opencode", "egm-upstream");
+export const EGM_UPSTREAM_ROOT = process.env.EGM_UPSTREAM_DIR || join(homedir(), ".local", "share", "opencode", "egm-upstream");
 
 async function git(args) {
   const { stdout = "" } = await execFileAsync(
