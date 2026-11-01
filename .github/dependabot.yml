@@ -1,0 +1,68 @@
+version: 2
+updates:
+  # Root Bun workspace and shared lockfile.
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    groups:
+      bun-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Independently versioned OpenCode V2 plugins.
+  - package-ecosystem: "bun"
+    directory: "/egm"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:15"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "bun"
+    directory: "/knowledge-work"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "bun"
+    directory: "/anthropic-skills"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:45"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "bun"
+    directory: "/openui-render"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 3
+
+  # Keep GitHub Actions pinned versions current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:15"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
