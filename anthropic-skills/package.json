@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@opencode/plugin": "2.2.5",
-    "solid-js": "^1.9.0"
+    "solid-js": "^2.0.3"
   },
   "peerDependencies": {
     "effect": "^4.0.0"
